@@ -1,17 +1,20 @@
-package com.android.utp.praticasintegrativascomplementares;
+package com.android.utp.praticasintegrativascomplementares.login;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.android.utp.praticasintegrativascomplementares.R;
+import com.android.utp.praticasintegrativascomplementares.util.Session;
+import com.android.utp.praticasintegrativascomplementares.home.HomeActivity;
+import com.android.utp.praticasintegrativascomplementares.model.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -38,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        intent = new Intent(this, MapsActivity.class);
+        intent = new Intent(this, HomeActivity.class);
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -47,11 +50,11 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.login_button);
 
         boolean loggedOut = AccessToken.getCurrentAccessToken() == null;
-        Log.d(LOG_TAG, "Logged in Status: " + loggedOut);
+        Log.d(LOG_TAG, "Logged in Status: " + !loggedOut);
 
         if(!loggedOut) {
-            Log.d(LOG_TAG, "Username: " + Profile.getCurrentProfile().getName());
             getUserProfile(AccessToken.getCurrentAccessToken());
+            startActivity(intent);
         }
 
         loginButton.setReadPermissions("email", "public_profile");
@@ -59,18 +62,17 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
+            if(user != null) {
                 Log.d(LOG_TAG, "Logged in Facebook account");
                 Log.d(LOG_TAG, "User id: " + user.getId());
                 Log.d(LOG_TAG, "User first name: " + user.getFirstName());
                 Log.d(LOG_TAG, "User last name: " + user.getLastName());
                 Log.d(LOG_TAG, "User email: " + user.getEmail());
                 Log.d(LOG_TAG, "User image resource url: " + user.getImageUrl());
+            }
 
-                session.setUserId(user.getId());
-                session.setFirstname(user.getFirstName());
-                session.setLastname(user.getLastName());
-                session.setEmail(user.getEmail());
-                session.setProfileImageUrl(user.getImageUrl());
+                session.setLogged(true);
 
                 startActivity(intent);
             }

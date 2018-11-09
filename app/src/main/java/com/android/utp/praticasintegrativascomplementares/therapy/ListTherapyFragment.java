@@ -1,26 +1,70 @@
-package com.android.utp.praticasintegrativascomplementares;
+package com.android.utp.praticasintegrativascomplementares.therapy;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.android.utp.praticasintegrativascomplementares.R;
+import com.android.utp.praticasintegrativascomplementares.databinding.FragmentRecyclerTherapyBinding;
+import com.android.utp.praticasintegrativascomplementares.model.TherapyItem;
 
 import java.util.ArrayList;
 
-public class ListTherapyActivity extends AppCompatActivity {
+public class ListTherapyFragment extends Fragment {
 
-    public ArrayList<TherapyItem> therapyList;
+    private ArrayList<TherapyItem> therapyList;
 
-    private ListView listView;
+    private TherapyRecycleAdapter adapter;
+
+    private RecyclerView recyclerView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_therapy);
-        populateTherapyList();
+        setHasOptionsMenu(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("List of Therapies");
+    }
 
-        TherapyItemAdapter therapyAdapter = new TherapyItemAdapter(this, therapyList, R.color.colorAccent);
-        listView = findViewById(R.id.listview_therapy);
-        listView.setAdapter(therapyAdapter);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        populateTherapyList();
+        FragmentRecyclerTherapyBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recycler_therapy, container, false);
+
+        recyclerView = binding.recyclerTherapy;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setHasFixedSize(true);
+        adapter = new TherapyRecycleAdapter(therapyList, null);
+
+        recyclerView.setAdapter(adapter);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.default_toolbar, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("List of Therapies");
     }
 
     private void populateTherapyList() {
