@@ -21,5 +21,7 @@
     <string name="action_search">Search</string>
     <string name="facebook_app_id">1098999030276636</string>
     <string name="fb_login_protocol_scheme">fb1098999030276636</string>
+    <string name="action_logout">Log Out</string>
+    <string name="action_favorite">Favorite</string>
 
 </resources>

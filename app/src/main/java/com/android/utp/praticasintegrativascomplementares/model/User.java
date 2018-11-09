@@ -1,4 +1,4 @@
-package com.android.utp.praticasintegrativascomplementares;
+package com.android.utp.praticasintegrativascomplementares.model;
 
 public class User {
     private String id;
