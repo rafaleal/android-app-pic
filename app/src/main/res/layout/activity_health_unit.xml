@@ -2,7 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data />
+    <data>
+        <variable
+            name="ubs"
+            type="com.android.utp.praticasintegrativascomplementares.models.ubs.UBS"/>
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,13 +26,15 @@
         <ImageView
             android:id="@+id/therapy_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_us_hauer"/>
 
         <TextView
             android:id="@+id/place_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:text="@{ubs.nome}"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,7 +50,8 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@{ubs.endereco}"/>
 
         </LinearLayout>
 
@@ -63,6 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{ubs.info}"
                 />
 
         </LinearLayout>
@@ -81,7 +89,8 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@{ubs.telefone}"/>
 
         </LinearLayout>
 

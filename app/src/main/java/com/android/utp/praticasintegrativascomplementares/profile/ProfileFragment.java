@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.utp.praticasintegrativascomplementares.R;
-import com.android.utp.praticasintegrativascomplementares.model.User;
+import com.android.utp.praticasintegrativascomplementares.models.User;
 import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
