@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="therapy"
-            type="com.android.utp.praticasintegrativascomplementares.model.TherapyItem"/>
+            name="pic"
+            type="com.android.utp.praticasintegrativascomplementares.models.pic.PIC"/>
     </data>
 
     <LinearLayout
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:text="@{therapy.therapyName}"/>
+                android:text="@{pic.nome}"/>
 
         </LinearLayout>
 

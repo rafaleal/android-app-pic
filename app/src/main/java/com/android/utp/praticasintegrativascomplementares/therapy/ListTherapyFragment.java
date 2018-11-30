@@ -1,5 +1,6 @@
 package com.android.utp.praticasintegrativascomplementares.therapy;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,25 +8,37 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.utp.praticasintegrativascomplementares.R;
 import com.android.utp.praticasintegrativascomplementares.databinding.FragmentRecyclerTherapyBinding;
-import com.android.utp.praticasintegrativascomplementares.model.TherapyItem;
+import com.android.utp.praticasintegrativascomplementares.models.pic.GetPICResponse;
+import com.android.utp.praticasintegrativascomplementares.models.pic.PIC;
+import com.android.utp.praticasintegrativascomplementares.network.NetworkManager;
 
-import java.util.ArrayList;
+import org.parceler.Parcels;
 
-public class ListTherapyFragment extends Fragment {
+import java.util.List;
 
-    private ArrayList<TherapyItem> therapyList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    private TherapyRecycleAdapter adapter;
+public class ListTherapyFragment extends Fragment implements TherapyRecycleAdapter.TherapyAdapterListener {
+
+    private List<PIC> therapyList;
+
+    private TherapyRecycleAdapter recyclerAdapter;
 
     private RecyclerView recyclerView;
+
+    private static final String TAG = "ListTherapyFragment";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,15 +50,12 @@ public class ListTherapyFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        populateTherapyList();
         FragmentRecyclerTherapyBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recycler_therapy, container, false);
 
         recyclerView = binding.recyclerTherapy;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        adapter = new TherapyRecycleAdapter(therapyList, null);
-
-        recyclerView.setAdapter(adapter);
+        getAPIData();
 
         return binding.getRoot();
     }
@@ -67,35 +77,35 @@ public class ListTherapyFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("List of Therapies");
     }
 
-    private void populateTherapyList() {
-        therapyList = new ArrayList<>();
-        therapyList.add(new TherapyItem("Apiterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Aromaterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Ayurveda", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Biodança", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Bioenergética", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Constelação familiar", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Cromoterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Dança circular", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Geoterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Hipnoterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Homeopatia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Imposição de mãos", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Medicina antroposófica/antroposofia aplicada à saúde", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Medicina Tradicional Chinesa – acupuntura", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Meditação", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Musicoterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Naturopatia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Osteopatia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Ozonioterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Plantas medicinais – fitoterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Quiropraxia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Reflexoterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Reiki", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Shantala", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Terapia Comunitária Integrativa", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Terapia de florais", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Termalismo social/crenoterapia", R.drawable.ic_logo_colorful));
-        therapyList.add(new TherapyItem("Yoga", R.drawable.ic_logo_colorful));
+    private void getAPIData() {
+        NetworkManager.service().getPics().enqueue(new Callback<GetPICResponse>() {
+            @Override
+            public void onResponse(final Call<GetPICResponse> call, final Response<GetPICResponse> response) {
+                therapyList = response.body().getObject().getArray();
+                Log.d(TAG, therapyList.get(0).getNome());
+                recyclerAdapter = new TherapyRecycleAdapter(therapyList, ListTherapyFragment.this::onTherapySelected);
+                recyclerView.setAdapter(recyclerAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<GetPICResponse> call, Throwable t) {
+                Toast.makeText(getActivity(), "Erro ao receber resposta!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onTherapySelected(PIC therapyItem) {
+        try {
+            Log.d("list onTherapySelected", therapyItem.toString());
+            Intent newTherapyActivity = new Intent(getActivity(), TherapyActivity.class);
+            Bundle extras = new Bundle();
+            extras.putParcelable("PIC", Parcels.wrap(therapyItem));
+            newTherapyActivity.putExtras(extras);
+            startActivity(newTherapyActivity);
+
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }
