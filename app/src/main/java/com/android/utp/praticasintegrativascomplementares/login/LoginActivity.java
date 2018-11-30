@@ -8,7 +8,7 @@ import android.util.Log;
 import com.android.utp.praticasintegrativascomplementares.R;
 import com.android.utp.praticasintegrativascomplementares.util.Session;
 import com.android.utp.praticasintegrativascomplementares.home.HomeActivity;
-import com.android.utp.praticasintegrativascomplementares.model.User;
+import com.android.utp.praticasintegrativascomplementares.models.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -35,8 +35,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private User user;
 
-    private Session session;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         intent = new Intent(this, HomeActivity.class);
 
         callbackManager = CallbackManager.Factory.create();
-
-        session = new Session(this);
 
         loginButton = findViewById(R.id.login_button);
 
@@ -72,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "User image resource url: " + user.getImageUrl());
             }
 
-                session.setLogged(true);
+                Session.setLogged(getApplicationContext(), true);
 
                 startActivity(intent);
             }

@@ -14,15 +14,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Intent intent;
 
-    Session session;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        session = new Session(this);
-
-        boolean isLogged = Session.getLogged();
+        boolean isLogged = Session.getLogged(this);
         Log.d(TAG, "onCreate: isLogged = " + isLogged);
 
         if (isLogged) {
