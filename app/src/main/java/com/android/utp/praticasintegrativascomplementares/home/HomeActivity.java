@@ -42,7 +42,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         mProfileFragment = new ProfileFragment();
 
 
-        managerFragment(mMapViewFragment);
+        managerFragment(mListTherapyFragment);
 
     }
 
