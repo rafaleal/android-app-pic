@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.utp.praticasintegrativascomplementares.R;
-import com.android.utp.praticasintegrativascomplementares.model.User;
+import com.android.utp.praticasintegrativascomplementares.models.User;
 import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -39,8 +39,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getUserProfile(AccessToken.getCurrentAccessToken());
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
+        setHasOptionsMenu(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Perfil");
     }
 
     @Override
@@ -50,12 +50,14 @@ public class ProfileFragment extends Fragment {
         profileImage = view.findViewById(R.id.profile_image);
         userName = view.findViewById(R.id.profile_username);
         userEmail = view.findViewById(R.id.profile_email);
+        getUserProfile(AccessToken.getCurrentAccessToken());
 
-        if (user != null) {
-            userName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
-            userEmail.setText(user.getEmail());
-            Glide.with(this).load(user.getImageUrl()).into(profileImage);
-        }
+//        Log.d(PROFILE_TAG, user.toString());
+//        if (user != null) {
+//            userName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+//            userEmail.setText(user.getEmail());
+//            Glide.with(this).load(user.getImageUrl()).into(profileImage);
+//        }
 
 
         return view;
@@ -82,7 +84,10 @@ public class ProfileFragment extends Fragment {
                             String image_url = "https://graph.facebook.com/" + id + "/picture?type=normal";
 
                             user = new User(id, first_name, last_name, email, image_url);
-
+                            Log.d(PROFILE_TAG, user.toString());
+                            userName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+                            userEmail.setText(user.getEmail());
+                            Glide.with(getActivity()).load(user.getImageUrl()).into(profileImage);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

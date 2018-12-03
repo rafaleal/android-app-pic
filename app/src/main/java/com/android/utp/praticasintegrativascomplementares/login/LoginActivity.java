@@ -6,20 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.android.utp.praticasintegrativascomplementares.R;
-import com.android.utp.praticasintegrativascomplementares.util.Session;
 import com.android.utp.praticasintegrativascomplementares.home.HomeActivity;
-import com.android.utp.praticasintegrativascomplementares.model.User;
+import com.android.utp.praticasintegrativascomplementares.models.User;
+import com.android.utp.praticasintegrativascomplementares.util.Session;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * A login screen that offers login via email/password.
@@ -35,8 +33,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private User user;
 
-    private Session session;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,16 +41,15 @@ public class LoginActivity extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
 
-        session = new Session(this);
-
         loginButton = findViewById(R.id.login_button);
 
         boolean loggedOut = AccessToken.getCurrentAccessToken() == null;
         Log.d(LOG_TAG, "Logged in Status: " + !loggedOut);
 
         if(!loggedOut) {
+            Log.d(LOG_TAG, "Calling getUserProfile");
             getUserProfile(AccessToken.getCurrentAccessToken());
-            startActivity(intent);
+//            startActivity(intent);
         }
 
         loginButton.setReadPermissions("email", "public_profile");
@@ -72,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "User image resource url: " + user.getImageUrl());
             }
 
-                session.setLogged(true);
+                Session.setLogged(getApplicationContext(), true);
 
                 startActivity(intent);
             }
@@ -98,24 +93,21 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getUserProfile(AccessToken currentAccessToken) {
         GraphRequest request = GraphRequest.newMeRequest(
-                currentAccessToken, new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.d(LOG_TAG, object.toString());
-                        try {
-                            String first_name = object.getString("first_name");
-                            String last_name = object.getString("last_name");
-                            String email = object.getString("email");
-                            String id = object.getString("id");
-                            String image_url = "https://graph.facebook.com/" + id + "/picture?type=normal";
+                currentAccessToken, (object, response) -> {
+//                    Log.d(LOG_TAG, object.toString());
+                    try {
+                        String first_name = object.getString("first_name");
+                        String last_name = object.getString("last_name");
+                        String email = object.getString("email");
+                        String id = object.getString("id");
+                        String image_url = "https://graph.facebook.com/" + id + "/picture?type=normal";
 
-                            user = new User(id, first_name, last_name, email, image_url);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                        user = new User(id, first_name, last_name, email, image_url);
+                        Session.setUser(getApplicationContext(), user);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 });
 
         Bundle parameters = new Bundle();

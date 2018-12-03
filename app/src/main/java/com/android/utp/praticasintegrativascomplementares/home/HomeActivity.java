@@ -27,13 +27,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     private ProfileFragment mProfileFragment;
     private Intent intent;
 
-    Session session;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        session = new Session(this);
 
         ActivityHomeBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
 
@@ -46,7 +42,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         mProfileFragment = new ProfileFragment();
 
 
-        managerFragment(mMapViewFragment);
+        managerFragment(mListTherapyFragment);
 
     }
 
@@ -99,7 +95,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     public void logout() {
 
         LoginManager.getInstance().logOut();
-        session.setLogged(false);
+        Session.setLogged(this,false);
 
     }
 

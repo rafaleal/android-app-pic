@@ -2,27 +2,28 @@ package com.android.utp.praticasintegrativascomplementares.therapy;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.android.utp.praticasintegrativascomplementares.R;
 import com.android.utp.praticasintegrativascomplementares.databinding.ItemTherapyBinding;
-import com.android.utp.praticasintegrativascomplementares.model.TherapyItem;
+import com.android.utp.praticasintegrativascomplementares.models.pic.PIC;
 
 import java.util.List;
 
 public class TherapyRecycleAdapter extends RecyclerView.Adapter<TherapyRecycleAdapter.ViewHolder> {
 
-    private List<TherapyItem> mTherapies;
+    private List<PIC> mTherapies;
 
     private TherapyAdapterListener therapyAdapterListener;
 
-    public TherapyRecycleAdapter(List<TherapyItem> therapies, TherapyAdapterListener listener) {
+    public TherapyRecycleAdapter(List<PIC> therapies, TherapyAdapterListener listener) {
         mTherapies = therapies;
         therapyAdapterListener = listener;
     }
 
-    public void add(int position, TherapyItem item) {
+    public void add(int position, PIC item) {
         mTherapies.add(position, item);
         notifyItemInserted(position);
     }
@@ -52,7 +53,7 @@ public class TherapyRecycleAdapter extends RecyclerView.Adapter<TherapyRecycleAd
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-        TherapyItem item = mTherapies.get(position);
+        PIC item = mTherapies.get(position);
         viewHolder.bind(item);
     }
 
@@ -69,16 +70,19 @@ public class TherapyRecycleAdapter extends RecyclerView.Adapter<TherapyRecycleAd
             mBinding = binding;
         }
 
-        void bind(TherapyItem item) {
+        void bind(final PIC item) {
             mBinding.listTherapyIcon.setImageResource(R.drawable.ic_logo_colorful);
-            mBinding.setTherapy(item);
+            mBinding.setPic(item);
+            Log.d("Inside ViewHolder bind", item.toString());
+            mBinding.therapyTextContainer.setOnClickListener(view -> {
+                Log.d("Inside lambda", item.toString());
+                therapyAdapterListener.onTherapySelected(item);
+            });
             mBinding.executePendingBindings();
         }
     }
 
     public interface TherapyAdapterListener {
-        void onPhotoClick(TherapyItem therapyItem);
-        void onTherapySelected(TherapyItem therapyItem);
-        void onButtonShare(String name, String description);
+        void onTherapySelected(PIC therapyItem);
     }
 }
