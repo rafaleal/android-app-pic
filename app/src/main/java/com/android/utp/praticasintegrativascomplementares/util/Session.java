@@ -3,6 +3,9 @@ package com.android.utp.praticasintegrativascomplementares.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.android.utp.praticasintegrativascomplementares.models.User;
+import com.google.gson.Gson;
+
 public class Session {
 
     private static final String FILE_PREFERENCES = "config_file";
@@ -41,5 +44,20 @@ public class Session {
 //        return gson.fromJson(json, UBS.class);
 //    }
 
+    public static void setUser(Context context, User user) {
+        Gson gson = new Gson();
+        String json = gson.toJson(user, User.class);
+
+        SharedPreferences.Editor editor = context.getSharedPreferences(FILE_PREFERENCES, Context.MODE_PRIVATE).edit();
+        editor.putString("USER", json).apply();
+    }
+
+    public static User getUser(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(FILE_PREFERENCES, Context.MODE_PRIVATE);
+        String json = preferences.getString("User", "");
+
+        Gson gson = new Gson();
+        return gson.fromJson(json, User.class);
+    }
 
 }
