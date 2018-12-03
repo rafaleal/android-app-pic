@@ -40,11 +40,13 @@ public class ListTherapyFragment extends Fragment implements TherapyRecycleAdapt
 
     private static final String TAG = "ListTherapyFragment";
 
+    private static final String TITLE = "Lista de Terapias Gratuitas";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("List of Therapies");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(TITLE);
     }
 
 
@@ -74,7 +76,7 @@ public class ListTherapyFragment extends Fragment implements TherapyRecycleAdapt
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("List of Therapies");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(TITLE);
     }
 
     private void getAPIData() {
